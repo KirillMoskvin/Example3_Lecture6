@@ -1,12 +1,9 @@
-package example2_query;
+package example3_select;
 
 import commons.FlywayInitializer;
 import commons.JDBCCredentials;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SQLDialect;
+import org.jooq.*;
 import org.jooq.impl.DSL;
 
 import java.sql.Connection;
@@ -25,22 +22,23 @@ public final class Main {
     try (Connection conn = DriverManager.getConnection(CREDS.url(), CREDS.login(), CREDS.password())) {
       final DSLContext context = DSL.using(conn, SQLDialect.POSTGRES);
 
-      final var records = context
+      final Result<Record3<String, String, String>> records = context
         .select(
+          BOOK.TITLE,
           AUTHOR.FIRST_NAME,
-          AUTHOR.LAST_NAME,
-          count().as("book_count")
+          AUTHOR.LAST_NAME
         )
-        .from(AUTHOR)
-        .join(BOOK).on(AUTHOR.ID.eq(BOOK.AUTHOR_ID))
-        .where(BOOK.LANGUAGE.eq("DE")).and(BOOK.PUBLISHED_IN.gt(1940))
-        .groupBy(AUTHOR.FIRST_NAME, AUTHOR.LAST_NAME)
-        .having(count().gt(1))
-        .orderBy(AUTHOR.LAST_NAME.asc().nullsFirst())
-        .limit(2)
-        .offset(1)
-//        .forUpdate()
+        .from(BOOK).join(AUTHOR).on(BOOK.AUTHOR_ID.eq(AUTHOR.ID))
+        .where(BOOK.PUBLISHED_IN.eq(1948))
         .fetch();
+
+      records.forEach(record -> {
+        System.out.println(
+          record.get(0, String.class)
+            + " " + record.get(1)
+            + " " + record.get(AUTHOR.LAST_NAME)
+        );
+      });
     } catch (Exception e) {
       e.printStackTrace();
     }
