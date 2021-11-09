@@ -28,13 +28,3 @@ INSERT INTO book (id, author_id, title         , published_in, language)
 VALUES           (3 , 2        , 'O Alquimista', 1988        , 'DE');
 INSERT INTO book (id, author_id, title         , published_in, language)
 VALUES           (4 , 2        , 'Brida'       , 1990        , 'DE');
-
-CREATE OR REPLACE PROCEDURE test_procedure ()
-LANGUAGE plpgsql
-AS $$
-    BEGIN
-        INSERT INTO author(first_name, last_name)
-        VALUES ('test', 'author');
-        COMMIT;
-    END
-$$;
