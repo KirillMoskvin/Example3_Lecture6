@@ -12,6 +12,7 @@ import java.time.LocalDate;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -49,7 +50,7 @@ public class Author extends TableImpl<AuthorRecord> {
     /**
      * The column <code>public.author.id</code>.
      */
-    public final TableField<AuthorRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<AuthorRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.author.first_name</code>.
@@ -107,6 +108,11 @@ public class Author extends TableImpl<AuthorRecord> {
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
+    }
+
+    @Override
+    public Identity<AuthorRecord, Integer> getIdentity() {
+        return (Identity<AuthorRecord, Integer>) super.getIdentity();
     }
 
     @Override

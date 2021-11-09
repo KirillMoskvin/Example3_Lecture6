@@ -1,20 +1,19 @@
-package example1_simple_read;
+package example8_create_table;
 
 import commons.FlywayInitializer;
 import commons.JDBCCredentials;
 import org.jetbrains.annotations.NotNull;
-import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
-import org.jooq.SQLDialect;
+import org.jooq.*;
 import org.jooq.impl.DSL;
+import org.jooq.impl.SQLDataType;
+import org.jooq.impl.TableImpl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 import static generated.Tables.AUTHOR;
-
-//import static generated.Tables.AUTHOR;
+import static org.jooq.util.postgres.PostgresDataType.INTEGER;
+import static org.jooq.util.postgres.PostgresDataType.NAME;
 
 public final class Main {
 
@@ -25,18 +24,22 @@ public final class Main {
     try (Connection conn = DriverManager.getConnection(CREDS.url(), CREDS.login(), CREDS.password())) {
       final DSLContext context = DSL.using(conn, SQLDialect.POSTGRES);
 
-      final Result<Record> result = context
-        .select()
-        .from(AUTHOR)
-        .fetch();
+      context
+        .createTable("person")
+        .column("id", SQLDataType.INTEGER)
+        .column("name", SQLDataType.VARCHAR)
+        .execute();
 
-      System.out.println("ID:\t\tFirst name\tLast name\t\t" );
-      for (Record record : result) {
-        Integer id = record.getValue(AUTHOR.ID);
-        String firstName = record.getValue(AUTHOR.FIRST_NAME);
-        String lastName = record.getValue(AUTHOR.LAST_NAME);
-        System.out.println(id + "\t\t" + firstName + "\t\t" + lastName);
-      }
+      context
+        .insertInto(new TableImpl<>("person"))
+        .values(1, "test_person")
+        .execute();
+
+      context
+        .selectFrom("person")
+        .fetch()
+        .forEach(System.out::println);
+
     } catch (Exception e) {
       e.printStackTrace();
     }

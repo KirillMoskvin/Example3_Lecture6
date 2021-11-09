@@ -15,7 +15,9 @@ public final class FlywayInitializer {
         CREDS.password()
       )
       .locations("db")
+      .loggers() //отключаем логирование, для наглядности вывода
       .load();
+
     flyway.clean();
     flyway.migrate();
   }

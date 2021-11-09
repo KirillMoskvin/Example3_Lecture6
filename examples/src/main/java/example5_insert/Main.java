@@ -32,6 +32,11 @@ public final class Main {
         .values(100, "Herman", "Hesse")
         .values(101, "Alfred", "Doblin")
         .execute();
+
+      context
+        .selectFrom(AUTHOR)
+        .fetch()
+        .forEach(System.out::println);
     } catch (Exception e) {
       e.printStackTrace();
     }

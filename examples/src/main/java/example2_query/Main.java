@@ -41,6 +41,7 @@ public final class Main {
         .offset(1)
 //        .forUpdate()
         .fetch();
+      System.out.println(records.size());
     } catch (Exception e) {
       e.printStackTrace();
     }

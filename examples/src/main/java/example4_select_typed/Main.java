@@ -34,6 +34,12 @@ public final class Main {
 
       System.out.println(bookRecord);
       System.out.println(authorRecord);
+
+      final BookRecord anotherRecord = context
+        .selectFrom(BOOK)
+        .where(BOOK.ID.eq(1))
+        .fetchOne();
+      System.out.println(anotherRecord);
     } catch (Exception e) {
       e.printStackTrace();
     }

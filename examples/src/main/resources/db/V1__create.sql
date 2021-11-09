@@ -1,5 +1,5 @@
 CREATE TABLE author (
-    id              INT      NOT NULL PRIMARY KEY,
+    id              SERIAL   NOT NULL PRIMARY KEY,
     first_name      VARCHAR  NOT NULL,
     last_name       VARCHAR  NOT NULL,
     date_of_birth   DATE,
@@ -7,11 +7,11 @@ CREATE TABLE author (
 );
 
 CREATE TABLE book (
-    id              INT        NOT NULL PRIMARY KEY,
-    author_id       INT        NOT NULL REFERENCES author(id),
+    id              SERIAL     NOT NULL PRIMARY KEY,
+    author_id       INT        REFERENCES author(id) ON UPDATE CASCADE ON DELETE CASCADE,
     title           VARCHAR    NOT NULL,
     language        VARCHAR    NOT NULL,
-    published_in    INT        NOT NULL
+    published_in    INT        NOT NULL DEFAULT 0
 );
 
 
@@ -28,3 +28,13 @@ INSERT INTO book (id, author_id, title         , published_in, language)
 VALUES           (3 , 2        , 'O Alquimista', 1988        , 'DE');
 INSERT INTO book (id, author_id, title         , published_in, language)
 VALUES           (4 , 2        , 'Brida'       , 1990        , 'DE');
+
+CREATE OR REPLACE PROCEDURE test_procedure ()
+LANGUAGE plpgsql
+AS $$
+    BEGIN
+        INSERT INTO author(first_name, last_name)
+        VALUES ('test', 'author');
+        COMMIT;
+    END
+$$;

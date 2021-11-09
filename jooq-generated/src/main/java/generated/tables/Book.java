@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Name;
 import org.jooq.Record;
 import org.jooq.Row5;
@@ -50,12 +51,12 @@ public class Book extends TableImpl<BookRecord> {
     /**
      * The column <code>public.book.id</code>.
      */
-    public final TableField<BookRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BookRecord, Integer> ID = createField(DSL.name("id"), SQLDataType.INTEGER.nullable(false).identity(true), this, "");
 
     /**
      * The column <code>public.book.author_id</code>.
      */
-    public final TableField<BookRecord, Integer> AUTHOR_ID = createField(DSL.name("author_id"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BookRecord, Integer> AUTHOR_ID = createField(DSL.name("author_id"), SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.book.title</code>.
@@ -70,7 +71,7 @@ public class Book extends TableImpl<BookRecord> {
     /**
      * The column <code>public.book.published_in</code>.
      */
-    public final TableField<BookRecord, Integer> PUBLISHED_IN = createField(DSL.name("published_in"), SQLDataType.INTEGER.nullable(false), this, "");
+    public final TableField<BookRecord, Integer> PUBLISHED_IN = createField(DSL.name("published_in"), SQLDataType.INTEGER.nullable(false).defaultValue(DSL.field("0", SQLDataType.INTEGER)), this, "");
 
     private Book(Name alias, Table<BookRecord> aliased) {
         this(alias, aliased, null);
@@ -108,6 +109,11 @@ public class Book extends TableImpl<BookRecord> {
     @Override
     public Schema getSchema() {
         return aliased() ? null : Public.PUBLIC;
+    }
+
+    @Override
+    public Identity<BookRecord, Integer> getIdentity() {
+        return (Identity<BookRecord, Integer>) super.getIdentity();
     }
 
     @Override
