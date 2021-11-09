@@ -25,7 +25,8 @@ public final class Main {
 
       context
         .delete(AUTHOR)
-        .where(AUTHOR.ID.eq(1));
+        .where(AUTHOR.ID.eq(1))
+        .execute();
 
       context
         .selectFrom(AUTHOR)
